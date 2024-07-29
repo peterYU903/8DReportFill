@@ -11,6 +11,11 @@ fields = [
     'je_contact_name', 'je_contact_email', 'je_contact_phone', 'who', 'when', 'why', 'what', 'how', 'how_much', 'where'
 ]
 
+QuestionAnswer = {
+    "What is Johnson Electric?": "Johnson Electric is a company that designs and manufactures motion systems like electric motors and actuators for automotive and consumer applications.",
+    "What products do you offer?": "We offer a wide range of products including electric motors, actuators, and motion systems for various applications.",
+}
+
 with st.form('Mandatory'):
     
     col1_head, col2_head = st.columns(spec=[0.8, 0.2])
@@ -130,17 +135,25 @@ with st.sidebar:
         "If you come across any problem, you could type in your confuse. "
         "The Bot will answer you!"
     )
-    messages_box = st.container(height=350)
+    col1_side, col2_side = st.columns([2, 1])
+    with col2_side:
+        if st.button("Clear History!", type="primary"):
+            st.session_state.messages = []
     if "messages" not in st.session_state:
         st.session_state.messages = []
+    container = st.container()
     for message in st.session_state.messages:
-        with messages_box.chat_message(message["role"]):
-            st.markdown(message["content"])
+        container.chat_message(message["role"]).write(message["content"])
+    for question in QuestionAnswer.keys():
+        if st.button(question):
+            container.chat_message("user").write(question)
+            st.session_state.messages.append({"role": "user", "content": question})
+            response = QuestionAnswer[question]
+            container.chat_message("assistant").write(response)
+            st.session_state.messages.append({"role": "assistant", "content": response})
     if prompt := st.chat_input("What is up?"):
+        container.chat_message("user").write(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
-        with messages_box.chat_message("user"):
-            st.markdown(prompt)
-        with messages_box.chat_message("assistant"):
-            response = st.write("Testing")
-        st.session_state.messages.append({"role": "assistant", "content": response})
-
+        response = "Testing"
+        container.chat_message("assistant").write(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})    
