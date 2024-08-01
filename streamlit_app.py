@@ -13,8 +13,8 @@ fields = [
 ]
 
 QuestionAnswer = {
-    "What is Johnson Electric?": "Johnson Electric is a company that designs and manufactures motion systems like electric motors and actuators for automotive and consumer applications.",
-    "What products do you offer?": "We offer a wide range of products including electric motors, actuators, and motion systems for various applications.",
+    # "What is Johnson Electric?": "Johnson Electric is a company that designs and manufactures motion systems like electric motors and actuators for automotive and consumer applications.",
+    # "What products do you offer?": "We offer a wide range of products including electric motors, actuators, and motion systems for various applications.",
 }
 
 @st.dialog("Summary List")
@@ -62,19 +62,16 @@ def summary():
     st.write(f"**Further Information / Special Notes:** {st.session_state.get('further_info', 'Not specified')}")
 
     if st.button("Confirm and Submit"):
-        st.success("Your complaint has been confirmed and submitted successfully!")
         st.session_state.submit = True
         st.rerun()
     else:
         st.warning("Please review your inputs and click 'Confirm and Submit' to finalize your complaint.")
-        
 
 with st.sidebar:
     st.title("💬 Quality Chatbot")
     st.write(
-        "This Chatbot will assit you from filling the form. "
-        "If you come across any problem, you could type in your confuse. "
-        "The Bot will answer you!"
+        "Welcome to the JE Quality Chatbot. "
+        "I will guide you on how to submit cases for quality issues. "
     )
     col1_side, col2_side = st.columns([2, 1])
     with col2_side:
@@ -82,10 +79,10 @@ with st.sidebar:
             st.session_state.messages = []
     if "messages" not in st.session_state:
         st.session_state.messages = []
-        st.session_state.messages.append({"role": "assistant", "content": "Welcome to fill in the quality issue form. Your feedback will help us improve our products!"})
-        st.session_state.messages.append({"role": "assistant", "content": "Feel free to ask questions related to the form if any!"})
+        st.session_state.messages.append({"role": "assistant", "content": "Please start by filling in the required fields with the necessary information."})
     container = st.container()
     for message in st.session_state.messages:
+        message_box = st.container(border=True)
         container.chat_message(message["role"]).write(message["content"])
     for question in QuestionAnswer.keys():
         if st.button(question):
@@ -94,13 +91,12 @@ with st.sidebar:
             response = QuestionAnswer[question]
             container.chat_message("assistant").write(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
-    if prompt := st.chat_input("What is up?"):
+    if prompt := st.chat_input("Ask me anything..."):
         container.chat_message("user").write(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
         response = "Testing"
         container.chat_message("assistant").write(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
-
 
 if 'submit' not in st.session_state:
     st.title("Quality Issue Form")
@@ -155,7 +151,6 @@ if 'submit' not in st.session_state:
                     'With this information, we will be able to expedite the follow-up process for your case. '
                     'Thank you.'
                 )
-
             col5, col6, col7 = st.columns(3)
             with col5:
                 je_lot_no = st.text_input("JE lot No.", key='je_lot_no')
@@ -173,20 +168,16 @@ if 'submit' not in st.session_state:
                 je_contact_email = st.text_input("E-mail", key="je_contact_email")
             with col20:
                 je_contact_phone = st.text_input("Phone", key="je_contact_phone")
-
             col1, col2 = st.columns(2)
-
             with col1:
                 what = st.text_input("What", key='what')
                 where = st.text_input("Where", key='where')
                 who = st.text_input("Who", key='who')
                 how_much = st.text_input("How much", key='how_much')
-
             with col2:
                 why = st.text_input("Why", key='why')
                 when = st.text_input("When", key='when')
                 how = st.text_input("How", key='how')   
-            
             col11, col12 = st.columns([0.25, 0.75])
             with col11:
                 st.write("Picture of Defect Product and/or Other Information")
@@ -220,5 +211,11 @@ if 'submit' not in st.session_state:
             st.stop()
 else:
     st.success("Complaint submitted successfully!")
+    st.write(
+        'Thank you for providing your information.\n'
+        '1. You will receive a notification email with the case number shortly.\n'
+        '2. If your matter is urgent, please do not hesitate to contact XXXXXXXX for immediate assistance.\n'
+        '3. Should you have any further questions, please feel free to continue the discussion with our chatbot.\n'
+    )
 
     
