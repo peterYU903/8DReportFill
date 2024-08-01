@@ -104,7 +104,8 @@ with st.sidebar:
         st.session_state.messages.append({"role": "assistant", "content": response})
 
 if 'submit' not in st.session_state:
-    st.session_state['submit'] = None
+    st.session_state['submit'] = True
+
 
 if st.session_state.submit is None:
     st.title("Quality Issue Form")
@@ -211,8 +212,6 @@ if st.session_state.submit is None:
             st.stop()
 else:
     st.success("Complaint submitted successfully!")
-    st.write(
-        'Thank you for providing your information. Your case number is: xxxxxx.\n'
-        'You will receive a notification email shortly. If you require urgent assistance, please do not hesitate to contact xxxx for immediate support.\n'
-        'Should you have any further questions, feel free to continue the discussion with our chatbot. We're here to support your enquiry.'
-    )
+    st.write('Thank you for providing your information. Your case number is: xxxxxx.')
+    st.write('You will receive a notification email shortly. If you require urgent assistance, please do not hesitate to contact xxxx for immediate support.')
+    st.write('Should you have any further questions, feel free to continue the discussion with our chatbot. We\'re here to support your enquiry.')
