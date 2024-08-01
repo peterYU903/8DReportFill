@@ -214,6 +214,5 @@ else:
     st.write(
         'Thank you for providing your information. Your case number is: xxxxxx.\n'
         'You will receive a notification email shortly. If you require urgent assistance, please do not hesitate to contact xxxx for immediate support.\n'
-        'If your matter is urgent, please do not hesitate to contact XXXXXXXX for immediate assistance.\n'
-        'Should you have any further questions, feel free to continue the discussion with our chatbot. We're here to support your enquiry.\n'
+        'Should you have any further questions, feel free to continue the discussion with our chatbot. We're here to support your enquiry.'
     )
