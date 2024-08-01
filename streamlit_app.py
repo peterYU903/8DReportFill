@@ -5,7 +5,7 @@ import streamlit as st
 import streamlit_antd_components as sac
 
 fields = [
-    'customer_group', 'customer_plant', 'complaint_title', 'description', 'severity', 'urgency',
+    'customer_group', 'customer_plant', 'complaint_title', 'description', 'severity',
     'customer_part_no', 'je_part_no', 'je_lot_no', 'je_product_date_code', 'lot_qty', 'returned_samples',
     'defect_qty', 'description_attach', 'customer_contact_name', 'customer_contact_email', 'customer_contact_phone',
     'je_contact_name', 'je_contact_email', 'je_contact_phone', 'who', 'when', 'why', 'what', 'how', 'how_much', 'where',
@@ -104,7 +104,7 @@ if 'submit' not in st.session_state:
 
         col1_head, col2_head = st.columns(spec=[0.8, 0.2])
         with col1_head:
-            st.subheader("Please provide the following information before you raise a complaint")
+            st.subheader("Please provide the following information for your quality issue")
         with col2_head:
             option = st.selectbox("Language", ("English", "Chinese"), key='option')
 
@@ -119,13 +119,11 @@ if 'submit' not in st.session_state:
         complaint_title = st.text_input("*Complaint title", key='complaint_title')
         description = st.text_area("*Problem Description", key='description')
 
-        col1, col2, col3 = st.columns([0.2, 0.4, 0.4])
+        col1, col2, _ = st.columns([0.2, 0.4, 0.4])
         with col1:
             complaint_type = st.write("Complaint type")
         with col2:
             severity = st.text_input("*Severity", key='severity')
-        with col3:
-            urgency = st.text_input("*Urgency", key='urgency')
 
         col8, col9, col10 = st.columns([0.2, 0.4, 0.4])
         with col8:
@@ -186,7 +184,6 @@ if 'submit' not in st.session_state:
                 description_attach = st.text_area("Attachment Description", key='description_attach')
             further_info = st.text_area("Further Information / Special Notes", key='further_info', max_chars=500)
 
-
         sac.divider(label='Submission', icon='check2-circle', align='center', color='gray')
         if 'valid' not in st.session_state:
             st.session_state.valid = None
@@ -197,8 +194,7 @@ if 'submit' not in st.session_state:
                     or st.session_state.defect_qty == 0 or not st.session_state.customer_contact_name \
                     or not st.session_state.customer_contact_email or not st.session_state.customer_contact_phone \
                     or not st.session_state.customer_group or not st.session_state.complaint_title \
-                    or not st.session_state.severity or not st.session_state.customer_part_no \
-                    or not st.session_state.urgency:
+                    or not st.session_state.severity or not st.session_state.customer_part_no:
                     st.session_state.valid = False
                 else:
                     st.session_state.valid = True
