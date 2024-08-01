@@ -70,7 +70,7 @@ def summary():
             st.session_state.submit = None
             st.session_state.valid = None
             st.rerun()
-    st.warning("Please review your inputs and click 'Confirm and Submit' to finalize your complaint.")
+    st.warning("Please review your inputs and click 'Confirm and Submit' to finalize your case.")
 
 with st.sidebar:
     st.title("💬 Quality Chatbot")
