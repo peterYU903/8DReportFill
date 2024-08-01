@@ -2,14 +2,13 @@ import streamlit as st
 # import os
 # from openai import OpenAI
 # from dotenv import load_dotenv
-import streamlit_antd_components as sac
 
 fields = [
     'customer_group', 'customer_plant', 'complaint_title', 'description', 'severity',
     'customer_part_no', 'je_part_no', 'je_lot_no', 'je_product_date_code', 'lot_qty', 'returned_samples',
     'defect_qty', 'description_attach', 'customer_contact_name', 'customer_contact_email', 'customer_contact_phone',
     'je_contact_name', 'je_contact_email', 'je_contact_phone', 'who', 'when', 'why', 'what', 'how', 'how_much', 'where',
-    'further_info', 'option'
+    'further_info', 'option', 'customer_complaint_id'
 ]
 
 QuestionAnswer = {
@@ -29,7 +28,6 @@ def summary():
     st.write(f"**Complaint Title:** {st.session_state.complaint_title}")
     st.write(f"**Problem Description:** {st.session_state.description}")
     st.write(f"**Severity:** {st.session_state.severity}")
-    st.write(f"**Urgency:** {st.session_state.get('urgency', 'Not specified')}")
     st.write(f"**Defect Qty:** {st.session_state.defect_qty}")
     st.write(f"**Lot Qty:** {st.session_state.get('lot_qty', 'Not specified')}")
     st.write(f"**Returned Samples:** {st.session_state.get('returned_samples', 'Not specified')}")
@@ -51,6 +49,7 @@ def summary():
     st.write(f"**Why:** {st.session_state.get('why', 'Not specified')}")
     st.write(f"**When:** {st.session_state.get('when', 'Not specified')}")
     st.write(f"**How:** {st.session_state.get('how', 'Not specified')}")
+    st.write(f"**Customer Complaint ID No.:** {st.session_state.get('customer_complaint_id', 'Not specified')}")
     st.divider()
     st.write("#### Attachments")
     if st.session_state.get('attachments'):
@@ -61,11 +60,17 @@ def summary():
     st.write(f"**Attachment Description:** {st.session_state.get('description_attach', 'Not specified')}")
     st.write(f"**Further Information / Special Notes:** {st.session_state.get('further_info', 'Not specified')}")
 
-    if st.button("Confirm and Submit"):
-        st.session_state.submit = True
-        st.rerun()
-    else:
-        st.warning("Please review your inputs and click 'Confirm and Submit' to finalize your complaint.")
+    col_1, col_2 = st.columns(2)
+    with col_1:
+        if st.button("Confirm and Submit"):
+            st.session_state.submit = True
+            st.rerun()
+    with col_2:
+        if st.button("Back to Edit"):
+            st.session_state.submit = None
+            st.session_state.valid = None
+            st.rerun()
+    st.warning("Please review your inputs and click 'Confirm and Submit' to finalize your complaint.")
 
 with st.sidebar:
     st.title("💬 Quality Chatbot")
@@ -99,6 +104,9 @@ with st.sidebar:
         st.session_state.messages.append({"role": "assistant", "content": response})
 
 if 'submit' not in st.session_state:
+    st.session_state['submit'] = None
+
+if st.session_state.submit is None:
     st.title("Quality Issue Form")
     with st.form('Mandatory'):
 
@@ -107,21 +115,17 @@ if 'submit' not in st.session_state:
             st.subheader("Please provide the following information for your quality issue")
         with col2_head:
             option = st.selectbox("Language", ("English", "Chinese"), key='option')
-
-        sac.divider(label='Mandatory', icon='house', align='center', color='gray')
-
+        st.divider()
         col1_mid, col2_mid = st.columns(spec=[0.4, 0.6])
         with col1_mid:
-            customer_group = st.text_input("*Customer group", key='customer_group')
-            customer_part_no = st.text_input("*Customer part No.", key='customer_part_no')
+            customer_group = st.text_input("*Customer Group", key='customer_group')
         with col2_mid:
-            customer_plant = st.text_input("*Customer plant", key='customer_plant')
-        complaint_title = st.text_input("*Complaint title", key='complaint_title')
+            customer_plant = st.text_input("*Customer Plant", key='customer_plant')
+        complaint_title = st.text_input("*Complaint Title", key='complaint_title')
         description = st.text_area("*Problem Description", key='description')
-
-        col1, col2, _ = st.columns([0.2, 0.4, 0.4])
+        col1, col2 = st.columns(2)
         with col1:
-            complaint_type = st.write("Complaint type")
+            customer_part_no = st.text_input("*Customer Part No.", key='customer_part_no')
         with col2:
             severity = st.text_input("*Severity", key='severity')
 
@@ -130,13 +134,13 @@ if 'submit' not in st.session_state:
             quantity = st.write("Quantity")
         with col9:
             lot_qty = st.number_input("Lot Qty", min_value=0, key='lot_qty')
-            returned_samples = st.number_input("Returned samples", min_value=0, key='returned_samples')
+            returned_samples = st.number_input("Returned Samples", min_value=0, key='returned_samples')
         with col10:
             defect_qty = st.number_input("*Defect Qty", min_value=0, key='defect_qty')
 
         col13, col14, col15, col16 = st.columns([0.25, 0.15, 0.3, 0.3])
         with col13:
-            st.write("*Customer contact")
+            st.write("*Customer Contact")
         with col14:
             customer_contact_name = st.text_input("Name", key="customer_contact_name")
         with col15:
@@ -151,31 +155,32 @@ if 'submit' not in st.session_state:
                 )
             col5, col6, col7 = st.columns(3)
             with col5:
-                je_lot_no = st.text_input("JE lot No.", key='je_lot_no')
+                je_lot_no = st.text_input("JE Lot No.", key='je_lot_no')
             with col6:
-                je_part_no = st.text_input("JE part No.", key='je_part_no')
+                je_part_no = st.text_input("JE Part No.", key='je_part_no')
             with col7:
-                je_product_date_code = st.text_input("JE product date code", key='je_product_date_code')
+                je_product_date_code = st.text_input("JE Product Date Code", key='je_product_date_code')
 
             col17, col18, col19, col20 = st.columns([0.25, 0.15, 0.3, 0.3])
             with col17:
-                st.write("JE contact")
+                st.write("JE Contact (if any)")
             with col18:
                 je_contact_name = st.text_input("Name", key="je_contact_name")
             with col19:
                 je_contact_email = st.text_input("E-mail", key="je_contact_email")
             with col20:
-                je_contact_phone = st.text_input("Phone", key="je_contact_phone")
+                je_contact_phone = st.text_input("Phone No.", key="je_contact_phone")
             col1, col2 = st.columns(2)
             with col1:
-                what = st.text_input("What", key='what')
-                where = st.text_input("Where", key='where')
-                who = st.text_input("Who", key='who')
-                how_much = st.text_input("How much", key='how_much')
+                what = st.text_input("What is the problem?", key='what')
+                where = st.text_input("Where was the issue found?", key='where')
+                who = st.text_input("Who discovered the issues?", key='who')
+                how_much = st.text_input("How many products are affected?", key='how_much')
+                customer_complaint_id = st.text_input("Customer Complaint ID No. (if any)", key='customer_complaint_id')
             with col2:
-                why = st.text_input("Why", key='why')
-                when = st.text_input("When", key='when')
-                how = st.text_input("How", key='how')   
+                why = st.text_input("Why did the issue occur?", key='why')
+                when = st.text_input("When was the issue happened?", key='when')
+                how = st.text_input("How did it happen?", key='how') 
             col11, col12 = st.columns([0.25, 0.75])
             with col11:
                 st.write("Picture of Defect Product and/or Other Information")
@@ -183,8 +188,7 @@ if 'submit' not in st.session_state:
                 attachments = st.file_uploader("", accept_multiple_files=True)
                 description_attach = st.text_area("Attachment Description", key='description_attach')
             further_info = st.text_area("Further Information / Special Notes", key='further_info', max_chars=500)
-
-        sac.divider(label='Submission', icon='check2-circle', align='center', color='gray')
+        st.divider()
         if 'valid' not in st.session_state:
             st.session_state.valid = None
         _, col21, _ = st.columns([0.45, 0.35, 0.2])
