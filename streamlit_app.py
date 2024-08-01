@@ -70,7 +70,7 @@ def summary():
         
 
 with st.sidebar:
-    st.title("💬 Chatbot")
+    st.title("💬 Quality Chatbot")
     st.write(
         "This Chatbot will assit you from filling the form. "
         "If you come across any problem, you could type in your confuse. "
@@ -82,6 +82,8 @@ with st.sidebar:
             st.session_state.messages = []
     if "messages" not in st.session_state:
         st.session_state.messages = []
+        st.session_state.messages.append({"role": "assistant", "content": "Welcome to fill in the quality issue form. Your feedback will help us improve our products!"})
+        st.session_state.messages.append({"role": "assistant", "content": "Feel free to ask questions related to the form if any!"})
     container = st.container()
     for message in st.session_state.messages:
         container.chat_message(message["role"]).write(message["content"])
@@ -101,7 +103,7 @@ with st.sidebar:
 
 
 if 'submit' not in st.session_state:
-    st.title("Complaint Fill In Form")
+    st.title("Quality Issue Form")
     with st.form('Mandatory'):
 
         col1_head, col2_head = st.columns(spec=[0.8, 0.2])
