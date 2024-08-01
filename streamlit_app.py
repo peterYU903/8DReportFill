@@ -212,10 +212,8 @@ if st.session_state.submit is None:
 else:
     st.success("Complaint submitted successfully!")
     st.write(
-        'Thank you for providing your information.\n'
-        '1. You will receive a notification email with the case number shortly.\n'
-        '2. If your matter is urgent, please do not hesitate to contact XXXXXXXX for immediate assistance.\n'
-        '3. Should you have any further questions, please feel free to continue the discussion with our chatbot.\n'
+        'Thank you for providing your information. Your case number is: xxxxxx.\n'
+        'You will receive a notification email shortly. If you require urgent assistance, please do not hesitate to contact xxxx for immediate support.\n'
+        'If your matter is urgent, please do not hesitate to contact XXXXXXXX for immediate assistance.\n'
+        'Should you have any further questions, feel free to continue the discussion with our chatbot. We're here to support your enquiry.\n'
     )
-
-    
